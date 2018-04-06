@@ -8,7 +8,9 @@ require ROOT_DIR . '/vendor/autoload.php';
 define('APP_SECRET_KEY', get_env("APP_SECRET_KEY"));
 define('CONFIG_SECRET_KEY', get_env("CONFIG_SECRET_KEY"));
 define('CONFIG_DATA_KEY', get_env("CONFIG_DATA_KEY"));
-
+define('REGISTER_SECRET_KEY', get_env("REGISTER_SECRET_KEY"));
+define('REGISTER_ADDRESS', get_env("REGISTER_ADDRESS"));
+define('REGISTER_PORT', get_env("REGISTER_PORT"));
 //注册自动加载
 $loader = new \Phalcon\Loader();
 $loader->registerNamespaces(
