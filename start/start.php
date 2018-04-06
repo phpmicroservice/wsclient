@@ -1,7 +1,7 @@
 <?php
 //include './logo.php';
 echo "开始主程序! \n";
-define("SERVICE_NAME", "CONFIG");# 设置服务名字
+define("SERVICE_NAME", "PROXY");# 设置服务名字
 define('ROOT_DIR', dirname(__DIR__));
 require ROOT_DIR . '/vendor/autoload.php';
 # 进行一些项目配置
