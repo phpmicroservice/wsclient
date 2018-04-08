@@ -66,6 +66,7 @@ class Guidance extends \Phalcon\Di\Injectable
      */
     public function readyJudge(Event $event, \pms\Server $pms_server, $timeid)
     {
+        output($this->config,'准备检查!');
         if ($this->config->database) {
             $this->dConfig->ready = true;
             output('初始化完成', 'init');
@@ -78,11 +79,9 @@ class Guidance extends \Phalcon\Di\Injectable
      */
     public function readySucceed()
     {
+        #更新 服务列表
+        swoole_timer_tick(3000, function ($timeid) {
 
-        # 对已注册的服务进行心跳检测
-        swoole_timer_tick($this->dConfig->overtime * 1000, function ($timeid) {
-            $server = new \app\logic\Service();
-            $server->pingExamine();
         });
     }
 

@@ -13,7 +13,7 @@ return [
     ],
     'overtime' => 10,
     'config_init' => true,
-    'server_reg' => false,
+    'server_reg' => true,
     'ready' => false,
     'codeUpdata' => [
         '/app/',
