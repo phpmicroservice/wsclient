@@ -1,17 +1,18 @@
 <?php
-# 引导文件,初始化文件
+
 namespace app;
 
 use Phalcon\Events\Event;
 
 /**
- *
+ * 引导类,初始化
  * Class guidance
  * @property \app\table\server $server_table
  * @package app
  */
 class Guidance extends \Phalcon\Di\Injectable
 {
+
     /**
      * 构造函数
      * guidance constructor.
@@ -56,17 +57,14 @@ class Guidance extends \Phalcon\Di\Injectable
         # 绑定一个准备判断和准备成功
         $this->eventsManager->attach('Server:readyJudge', $this);
         $this->eventsManager->attach('Server:readySucceed', $this);
-
-
     }
-
 
     /**
      * 准备判断
      */
     public function readyJudge(Event $event, \pms\Server $pms_server, $timeid)
     {
-        output($this->config,'准备检查!');
+        output($this->config, '准备检查!');
         if ($this->config->database) {
             $this->dConfig->ready = true;
             output('初始化完成', 'init');
@@ -77,12 +75,11 @@ class Guidance extends \Phalcon\Di\Injectable
     /**
      * 准备完成
      */
-    public function readySucceed()
+    public function readySucceed(Event $event, \pms\Server $pms_server, \Swoole\Server $swoole_server)
     {
-        #更新 服务列表
-        swoole_timer_tick(3000, function ($timeid) {
-
-        });
+        #实例化更新服务列表
+        $ser = new logic\UpdateServer($swoole_server);
+        $ser->start();
     }
 
     /**
@@ -102,6 +99,5 @@ class Guidance extends \Phalcon\Di\Injectable
         $router->connect->send_error('没有权限', [], 403);
         return false;
     }
-
 
 }
