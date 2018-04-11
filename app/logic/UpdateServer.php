@@ -72,7 +72,7 @@ class UpdateServer extends \app\Base
      */
     public function receive(\Phalcon\Events\EventInterface $event, \pms\bear\Client $Client, $data)
     {
-        output($data, 'UpdateServer');
+        //output($data, 'UpdateServer');
         if ($data['e']) {
             # 出错
         } else {

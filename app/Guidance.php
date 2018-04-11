@@ -64,7 +64,7 @@ class Guidance extends \Phalcon\Di\Injectable
      */
     public function readyJudge(Event $event, \pms\Server $pms_server, $timeid)
     {
-        output($this->config, '准备检查!');
+        output(boolval($this->config->database), '准备检查!');
         if ($this->config->database) {
             $this->dConfig->ready = true;
             output('初始化完成', 'init');
@@ -90,14 +90,7 @@ class Guidance extends \Phalcon\Di\Injectable
      */
     public function handleCall(Event $event, \pms\Router $router, $data)
     {
-        output($data, 'handleCall');
-        $new_key = md5(md5(APP_SECRET_KEY) . md5($data['name']));
-        $old_key = $data['k'];
-        if (\hash_equals($new_key, $old_key)) {
-            return true;
-        }
-        $router->connect->send_error('没有权限', [], 403);
-        return false;
+        return true;
     }
 
 }
