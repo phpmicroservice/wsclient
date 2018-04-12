@@ -23,6 +23,7 @@ class Fault extends \pms\Controller
     public function controller()
     {
         $data = $this->connect->request;
+        output('262626', 26);
         $this->proxy_send($data, $this->connect->getFd());
     }
 
