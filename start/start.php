@@ -29,7 +29,7 @@ $server = new \pms\Server('0.0.0.0', 9502, SWOOLE_BASE, SWOOLE_SOCK_TCP, [
     'open_eof_split' => true, //打开EOF检测
     'package_eof' => PACKAGE_EOF, //设置EOF
 ]);
-$guidance = new \app\guidance();
+$guidance = new \app\Guidance();
 $server->onBind('onWorkerStart', $guidance);
 $server->onBind('beforeStart', $guidance);
 $server->start();
