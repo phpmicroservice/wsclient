@@ -78,12 +78,22 @@ class Proxy extends Base
         } else {
             $config = $config_list[0];
         }
+        if (empty($config)) {
+            self::$instance[$server_name] = "服务不存在!";
+            return "服务不存在!";
+        }
         output($config, '服务链接配置' . $server_name);
         self::$instance[$server_name] = new self($server, $config['host'], $config['port']);
         self::$instance[$server_name]->server_name = $server_name;
 
     }
 
+    /**
+     * 发送
+     * @param $data
+     * @param $fd
+     * @return bool|void
+     */
     public function send($data, $fd)
     {
         if (isset($data['p'])) {

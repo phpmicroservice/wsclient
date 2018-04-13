@@ -53,6 +53,17 @@ class Fault extends \pms\Controller
     {
         $server_name = $data['s'];
         $proxy = Proxy::getInstance($this->connect->swoole_server, $server_name);
+        if (is_string($proxy)) {
+            # 出错了!
+            $data = [
+                'e' => 404,
+                'm' => '服务不存在',
+                'st' => 'proxy@index',
+                'p' => $data['p'] ?? ''
+            ];
+            $this->connect->swoole_server->send($fd, \swoole_serialize::pack($data) . PACKAGE_EOF);
+            return false;
+        }
         $re = $proxy->send($data, $fd);
         output($re, '消息发送结果');
         if ($re === false) {
