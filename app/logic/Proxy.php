@@ -108,7 +108,7 @@ class Proxy extends Base
             ];
         }
         $data['p'] = $p;
-        if ($this->proxy_client->isConnected()) {
+        if ($this->proxy_client->isConnected) {
             return $this->proxy_client->send($data);
         }
         self::start($this->swoole_server, $this->server_name);
