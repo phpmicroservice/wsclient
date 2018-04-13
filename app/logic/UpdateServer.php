@@ -63,8 +63,8 @@ class UpdateServer extends \app\Base
      */
     private function get_key()
     {
-        defined('REGISTER_SECRET_KEY') || exit('缺少必要的常量REGISTER_SECRET_KEY');
-        return md5(md5(REGISTER_SECRET_KEY) . md5(strtolower(SERVICE_NAME)));
+
+        return md5(md5(get_env('REGISTER_SECRET_KEY')) . md5(strtolower(SERVICE_NAME)));
     }
 
     /**
