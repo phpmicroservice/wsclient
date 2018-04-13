@@ -69,7 +69,7 @@ class Guidance extends \Phalcon\Di\Injectable
             $this->dConfig->ready = true;
             output('初始化完成', 'init');
         }
-        $this->dConfig->ready = true;
+
     }
 
     /**
