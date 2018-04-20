@@ -3,6 +3,8 @@
 namespace app;
 
 use Phalcon\Events\Event;
+use pms\App;
+use pms\Output;
 
 /**
  * 引导类,初始化
@@ -57,7 +59,19 @@ class Guidance extends \Phalcon\Di\Injectable
         # 绑定一个准备判断和准备成功
         $this->eventsManager->attach('Server:readyJudge', $this);
         $this->eventsManager->attach('Server:readySucceed', $this);
+        $this->eventsManager->attach('App:receive', function (Event $event, App $app) {
+            \output(get_class($event), '6262262662');
+            $app->eventsManager->attach('dispatch:beforeDispatch', function ($Event, \pms\Dispatcher $dispatch) {
+                $s = $dispatch->connect->s;
+                if (!empty($s)) {
+                    $dispatch->setTaskName('fault');
+                    $dispatch->setActionName('proxy');
+                }
+            });
+            $app->setEventsManager($app->eventsManager);
+        });
     }
+
 
     /**
      * 准备判断

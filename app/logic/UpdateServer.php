@@ -54,7 +54,7 @@ class UpdateServer extends \app\Base
             'port' => APP_HOST_PORT,
             'k' => $this->get_key()
         ];
-        $this->register_client->send_ask('service_getall', $data);
+        $this->register_client->send_ask('/service/getall', $data);
     }
 
     /**
@@ -78,7 +78,7 @@ class UpdateServer extends \app\Base
         } else {
 //            output($data, 'US_receive');
             # 正确的
-            if ($data['t'] == 'service_getall') {
+            if ($data['t'] == '/service/getall') {
                 # 我们需要的数据
                 $list = $data['d'];
                 foreach ($list as $name => $value) {

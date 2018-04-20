@@ -6,12 +6,12 @@ use app\logic\Proxy;
 use app\logic\Server;
 
 /**
- * Empty 不合法的请求而的处理
+ * 需要转发的请求
  */
 class Fault extends \pms\Controller
 {
 
-    public function onInitialize($connect)
+    public function initialize()
     {
 
     }
@@ -20,10 +20,10 @@ class Fault extends \pms\Controller
      * 不合法的控制器名字
      * @param $data
      */
-    public function controller()
+    public function proxy()
     {
         $data = $this->connect->request;
-        output('262626', 26);
+        output('262626', 'Fault_proxy');
         $this->proxy_send($data, $this->connect->getFd());
     }
 
