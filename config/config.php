@@ -18,6 +18,7 @@ return [
     'codeUpdata' => [
         '/app/',
         '/start/',
-        '/tool/'
+        '/tool/',
+        '/vendor/phpmicroservice/pms-frame/src/',
     ]
 ];
