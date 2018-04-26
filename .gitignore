@@ -4,4 +4,3 @@
 .vscode/
 .cache/
 vendor/
-composer.lock
