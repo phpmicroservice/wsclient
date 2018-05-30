@@ -27,23 +27,6 @@ class Fault extends \pms\Controller
         $this->proxy_send($data, $this->connect->getFd());
     }
 
-
-    /**
-     * 消耗队列
-     */
-    public function pop_channel()
-    {
-        output('pop_channel', 'pop_channel');
-
-        output($this->connect->swoole_server->channel, 'pop_channel');
-        $data = $this->connect->swoole_server->channel->pop();
-        if ($data == false) {
-            return false;
-        }
-        output($data, 'pop_channel_1');
-        $this->proxy_send($data['d'], $data['fd'], true);
-    }
-
     /**
      * 代理发送
      * @param $data
@@ -64,6 +47,7 @@ class Fault extends \pms\Controller
             $this->connect->swoole_server->send($fd, \swoole_serialize::pack($data) . PACKAGE_EOF);
             return false;
         }
+
         $re = $proxy->send($data, $fd);
         output($re, '消息发送结果');
         if ($re === false) {
@@ -79,6 +63,22 @@ class Fault extends \pms\Controller
                 $this->pop_channel();
             }
         }
+    }
+
+    /**
+     * 消耗队列
+     */
+    public function pop_channel()
+    {
+        output('pop_channel', 'pop_channel');
+
+        output($this->connect->swoole_server->channel, 'pop_channel');
+        $data = $this->connect->swoole_server->channel->pop();
+        if ($data == false) {
+            return false;
+        }
+        output($data, 'pop_channel_1');
+        $this->proxy_send($data['d'], $data['fd'], true);
     }
 
     /**
