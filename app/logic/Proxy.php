@@ -79,7 +79,7 @@ class Proxy extends Base
             $config = $config_list[0];
         }
         if (empty($config)) {
-            self::$instance[$server_name] = "服务不存在!";
+            self::$instance[$server_name] = "服务不存在!" . $server_name;
             return "服务不存在!" . $server_name;
         }
         output($config, '服务链接配置' . $server_name);
