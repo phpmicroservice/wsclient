@@ -40,7 +40,7 @@ class Fault extends \pms\Controller
             # 出错了!
             $data = [
                 'e' => 404,
-                'm' => '服务不存在:' . $server_name,
+                'm' => '服务异常-' . $server_name . ':' . $proxy,
                 'st' => 'proxy@index',
                 'p' => $data['p'] ?? ''
             ];
