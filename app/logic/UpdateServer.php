@@ -54,7 +54,7 @@ class UpdateServer extends \app\Base
             'port' => APP_HOST_PORT,
             'k' => $this->get_key()
         ];
-        $this->register_client->send_ask('/service/getall', $data);
+        $this->register_client->send_ask('reg', '/service/getall', $data);
     }
 
     /**

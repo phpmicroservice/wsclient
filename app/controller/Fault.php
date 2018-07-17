@@ -41,7 +41,7 @@ class Fault extends \pms\Controller
             $data = [
                 'e' => 404,
                 'm' => '服务异常-' . $server_name . ':' . $proxy,
-                'st' => 'proxy@index',
+                'st' => 'proxy@/index/index',
                 'p' => $data['p'] ?? ''
             ];
             $this->connect->swoole_server->send($fd, \swoole_serialize::pack($data) . PACKAGE_EOF);
