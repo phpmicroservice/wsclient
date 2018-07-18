@@ -12,8 +12,8 @@ use app\Base;
  */
 class Proxy extends Base
 {
-    public static $connectend = false;
     private static $instance;
+    public $connectend = false;
     public $swoole_server;
     public $server_name;
     private $proxy_client;
@@ -41,7 +41,7 @@ class Proxy extends Base
         if (!$this->proxy_client->isConnected()) {
             $this->proxy_client->start();
         }
-        self::$connectend = true;
+
 
     }
 
@@ -122,7 +122,7 @@ class Proxy extends Base
     public function connect()
     {
         output('代理器链接成功');
-        self::$connectend = true;
+        $this->connectend = true;
 
     }
 
@@ -132,9 +132,10 @@ class Proxy extends Base
      */
     public function error()
     {
+        $this->connectend = false;
         output('出错', '代理器');
         # 自动重连
-        self::start($this->swoole_server, $this->server_name);
+        //self::start($this->swoole_server, $this->server_name);
     }
 
     /**
@@ -143,9 +144,10 @@ class Proxy extends Base
     public function close()
     {
         output('关闭', '代理器');
-        self::$connectend = false;
+        $this->connectend = false;
+        self::$instance[$this->server_name] = null;
         # 自动重连
-        self::start($this->swoole_server, $this->server_name);
+        //self::start($this->swoole_server, $this->server_name);
     }
 
     /**
@@ -154,7 +156,7 @@ class Proxy extends Base
     public function receive(\Phalcon\Events\EventInterface $event, \pms\bear\Client $client, $data)
     {
         output($data, '代理器收到消息');
-        self::$connectend = true;
+        $this->connectend = true;
         $fd = $data['p'][1];
         $data['p'] = $data['p'][0];
         $data['mt'] = strtolower($data['f']) . '@' . $data['t'];
