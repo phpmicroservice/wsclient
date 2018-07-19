@@ -133,6 +133,7 @@ class Proxy extends Base
     public function error()
     {
         $this->connectend = false;
+        $this->proxy_client->swoole_client->close();
         output('出错', '代理器');
         # 自动重连
         //self::start($this->swoole_server, $this->server_name);
