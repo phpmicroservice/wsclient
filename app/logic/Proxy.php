@@ -161,9 +161,14 @@ class Proxy extends Base
         $data['p'] = $data['p'][0];
         $data['mt'] = strtolower($data['f']) . '@' . $data['t'];
         output($data, '代理器要返回的');
-        output($fd, '代理器要返回的2');
         $this->swoole_server->send($fd, \swoole_serialize::pack($data) . PACKAGE_EOF);
 
+    }
+
+    public function __destruct()
+    {
+        // TODO: Implement __destruct() method.
+        output('销毁代理器对象');
     }
 
 }

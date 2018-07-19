@@ -2,6 +2,7 @@
 
 namespace app;
 
+use function Couchbase\fastlzCompress;
 use Phalcon\Events\Event;
 use pms\App;
 use pms\Output;
@@ -10,6 +11,8 @@ use pms\Output;
  * 引导类,初始化
  * Class guidance
  * @property \app\table\server $server_table
+ * @property \Phalcon\Cache\BackendInterface $cache
+ *
  * @package app
  */
 class Guidance extends \Phalcon\Di\Injectable
@@ -88,9 +91,19 @@ class Guidance extends \Phalcon\Di\Injectable
      */
     public function readySucceed(Event $event, \pms\Server $pms_server, \Swoole\Server $swoole_server)
     {
-        #实例化更新服务列表
-        $ser = new logic\UpdateServer($swoole_server);
-        $ser->start();
+        if ($this->cache->get('UpdateServer94')) {
+            $this->cache->save('UpdateServer94', false);
+            \output("96969696969666666");
+            #实例化更新服务列表
+            $ser = new logic\UpdateServer($swoole_server);
+            $ser->start();
+        }
+
+    }
+
+    public function onStart()
+    {
+        $this->cache->save('UpdateServer94', true);
     }
 
     /**
