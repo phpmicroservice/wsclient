@@ -36,16 +36,8 @@ class Guidance extends \Phalcon\Di\Injectable
     public function beforeStart(Event $event, \pms\Server $pms_server, \Swoole\Server $server)
     {
         output('beforeStart  beforeStart', 'beforeStart');
-        # 写入依赖注入
+        $server->channel = new \Swoole\Channel(1024 * 1024 * 128);# 128M
 
-        $this->di->setShared('server_table', function () {
-            return new \app\table\server();
-        });
-        $this->di->setShared('server_ping_table', function () {
-            return new \app\table\serverPing();
-        });
-
-        $this->server_table;
     }
 
     /**
@@ -100,6 +92,7 @@ class Guidance extends \Phalcon\Di\Injectable
         }
 
     }
+
 
     public function onStart()
     {
