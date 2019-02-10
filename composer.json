@@ -1,5 +1,6 @@
 {
   "require": {
-    "phpmicroservice/pms-frame": "0.3.*"
+    "phpmicroservice/pms-frame": "0.3.*",
+    "phalcon/ide-stubs": "^3.4"
   }
 }

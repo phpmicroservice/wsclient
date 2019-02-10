@@ -125,7 +125,7 @@ $di->set(
 
 
 $di->setShared('logger', function () {
-    $logger = new \pms\Logger\Adapter\MysqlLog('log');
+    $logger = new \Phalcon\Logger\Adapter\File(ROOT_DIR.'/runtime/log/'.date('YmdHis').'.log');
     return $logger;
 });
 

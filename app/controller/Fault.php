@@ -58,6 +58,7 @@ class Fault extends \pms\Controller
             ]);
             swoole_timer_after(2000, [$this, pop_channel]);
         } else {
+            $this->logger->info(json_encode($data));
             ## 发送成功
             if ($channel) {
                 $this->pop_channel();
