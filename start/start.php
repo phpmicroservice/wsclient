@@ -13,6 +13,11 @@ $re9 = env_exist([
 if (is_string($re9)) {
     exit('defined :' . $re9);
 }
+if (APP_DEBUG) {
+    error_reporting(E_ALL);
+    ini_set('log_errors', 'On');
+    ini_set('error_log', './phplog.log');
+}
 
 //注册自动加载
 $loader = new \Phalcon\Loader();
@@ -30,8 +35,6 @@ $server = new \pms\Server('0.0.0.0', 9502, SWOOLE_PROCESS, SWOOLE_SOCK_TCP, [
     'worker_num_mulriple' => 4,
     'task_worker_num_mulriple' => 1,
     'reload_async' => false,
-    'open_eof_split' => true, //打开EOF检测
-    'package_eof' => PACKAGE_EOF, //设置EOF
 ]);
 $guidance = new \app\Guidance();
 $server->onBind('onWorkerStart', $guidance);
