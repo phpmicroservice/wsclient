@@ -15,9 +15,7 @@ use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 $loader = new \Phalcon\Loader();
 $loader->registerNamespaces(
     [
-        'app' => ROOT_DIR . '/app/',
-        'pms' => ROOT_DIR . '/pms/',
-        'funch' => ROOT_DIR . '/tool/',
+        'app' => ROOT_DIR . '/app/'
     ]
 );
 $loader->register();
@@ -27,7 +25,7 @@ $loader->register();
  * The FactoryDefault Dependency Injector automatically registers the right
  * services to provide a full stack framework.
  */
-$di = new Phalcon\DI\FactoryDefault();
+$di = new Phalcon\DI\FactoryDefault\Cli();
 
 $di->setShared('dConfig', function () {
     #Read configuration
@@ -52,13 +50,10 @@ $di->setShared('cache', function () {
         ]
     );
 
-    $cache = new \Phalcon\Cache\Backend\File(
-        $frontCache, [
-            "cacheDir" => CACHE_DIR,
-        ]
-    );
+    $cache = new \Phalcon\Cache\Backend\Memory($frontCache);
     return $cache;
 });
+
 
 /**
  * 全局缓存
@@ -96,6 +91,14 @@ $di->setShared('gCache', function () use ($di) {
     return $cache;
 });
 
+$di->setShared('dispatcher', function () {
+    #
+    $dispatcher = new Phalcon\Cli\Dispatcher();
+    $dispatcher->setDefaultNamespace('app\controller');
+    $dispatcher->setActionSuffix('');
+    $dispatcher->setTaskSuffix('');
+    return $dispatcher;
+});
 
 //注册过滤器,添加了几个自定义过滤方法
 $di->setShared('filter', function () {
@@ -125,8 +128,37 @@ $di->set(
 
 
 $di->setShared('logger', function () {
-    $logger = new \Phalcon\Logger\Adapter\File(ROOT_DIR.'/runtime/log/'.date('YmdHis').'.log');
+    $logger = new \Phalcon\Logger\Adapter\File(ROOT_DIR . '/runtime/log/' . date('YmdHis') . '.log');
     return $logger;
+});
+
+
+$di->setShared('', function () {
+    # 客户端
+    $client = new \Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
+
+    $client->set(SD_OPTION);
+    $client->on("connect", function (swoole_client $cli) {
+        echo "代理器链接成功! \n";
+    });
+    $client->on("receive", 'receive');
+
+    $client->on("error", function (swoole_client $client) {
+        echo "代理器 error\n";
+        echo $client->errCode;
+        swoole_timer_after(1000, function ($client) {
+            $client->connect(TCP_SERVER_HOST, TCP_SERVER_PORT);
+        }, $client);
+    });
+    $client->on("close", function (swoole_client $client) {
+        echo "代理器 close \n";
+        swoole_timer_after(1000, function ($client) {
+            $client->connect(TCP_SERVER_HOST, TCP_SERVER_PORT);
+        }, $client);
+    });
+
+    $client->connect(TCP_SERVER_HOST, TCP_SERVER_PORT);
+    return $client;
 });
 
 
@@ -151,20 +183,22 @@ $di["db"] = function () use ($di) {
     );
 };
 
-
-$di["router"] = function () {
+$di->setShared('router2', function () {
     $router = new \Phalcon\Mvc\Router();
-    $router->setDefaultNamespace('app\\controller');
-    $router->setDefaultController('index');
+    $router->setDefaultController('open');
     $router->setDefaultAction('index');
     $router->add(
         "/:controller/:action/:params", [
-            "controller" => 1,
-            "action" => 2,
-            'params' => 3
+            "task" => 1,
+            "action" => 2
         ]
     );
-
+    $router->add(
+        "/:controller/:action", [
+            "task" => 1,
+            "action" => 2
+        ]
+    );
     return $router;
-};
+});
 

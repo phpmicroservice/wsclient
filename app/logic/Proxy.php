@@ -71,9 +71,9 @@ class Proxy extends Base
     {
         $cache_key = '74_' . $server_name;
         $gCache = \Phalcon\Di::getDefault()->getShared('gCache');
-        $config_list = $gCache->get($cache_key);
+        $config_list = $gCache->get($cache_key, []);
 
-        if (count($config_list) > 1) {
+        if (count((array)$config_list) > 1) {
             $config = $config_list[mt_rand(0, count($config_list) - 1)];
         } else {
             $config = $config_list[0];
@@ -82,7 +82,7 @@ class Proxy extends Base
             self::$instance[$server_name] = "服务不存在!" . $server_name;
             return "服务不存在!" . $server_name;
         }
-        output($config, '服务链接配置' . $server_name);
+        \pms\output($config, '服务链接配置' . $server_name);
         self::$instance[$server_name] = new self($server, $config['host'], $config['port']);
         self::$instance[$server_name]->server_name = $server_name;
 
@@ -121,7 +121,7 @@ class Proxy extends Base
      */
     public function connect()
     {
-        output('代理器链接成功');
+        \pms\output('代理器链接成功');
         $this->connectend = true;
 
     }
@@ -134,7 +134,7 @@ class Proxy extends Base
     {
         $this->connectend = false;
         $this->proxy_client->swoole_client->close();
-        output('出错', '代理器');
+        \pms\output('出错', '代理器');
         # 自动重连
         //self::start($this->swoole_server, $this->server_name);
     }
@@ -144,7 +144,7 @@ class Proxy extends Base
      */
     public function close()
     {
-        output('关闭', '代理器');
+        \pms\output('关闭', '代理器');
         $this->connectend = false;
         self::$instance[$this->server_name] = null;
         # 自动重连
@@ -156,20 +156,34 @@ class Proxy extends Base
      */
     public function receive(\Phalcon\Events\EventInterface $event, \pms\bear\Client $client, $data)
     {
-        output($data, '代理器收到消息');
+        \pms\output($data, '代理器收到消息');
         $this->connectend = true;
         $fd = $data['p'][1];
         $data['p'] = $data['p'][0];
         $data['mt'] = strtolower($data['f']) . '@' . $data['t'];
-        output($data, '代理器要返回的');
-        $this->swoole_server->send($fd, \swoole_serialize::pack($data) . PACKAGE_EOF);
+        \pms\output($data, '代理器要返回的');
+        $this->swoole_server->send($fd, $this->encode($data));
 
     }
+
+
+    /**
+     * 编码
+     * @param array $data
+     * @return string
+     */
+    private function encode(array $data): string
+    {
+        $msg_normal = \pms\Serialize::pack($data);
+        $msg_length = pack("N", strlen($msg_normal)) . $msg_normal;
+        return $msg_length;
+    }
+
 
     public function __destruct()
     {
         // TODO: Implement __destruct() method.
-        output('销毁代理器对象');
+        \pms\output('销毁代理器对象');
     }
 
 }

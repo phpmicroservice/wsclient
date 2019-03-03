@@ -1,6 +1,15 @@
 {
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/phpmicroservice/pms.git"
+    }
+  ],
   "require": {
-    "phpmicroservice/pms-frame": "0.3.*",
-    "phalcon/ide-stubs": "^3.4"
+    "phpmicroservice/pms-frame": "0.3.*dev"
+  },
+  "require-dev": {
+    "eaglewu/swoole-ide-helper": "dev-master@dev",
+    "phalcon/ide-stubs": "v3.4.*"
   }
 }

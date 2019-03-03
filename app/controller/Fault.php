@@ -23,7 +23,7 @@ class Fault extends \pms\Controller
     public function proxy()
     {
         $data = $this->connect->request;
-        output('262626', 'Fault_proxy');
+        \pms\output('262626', 'Fault_proxy');
         $this->proxy_send($data, $this->connect->getFd());
     }
 
@@ -44,19 +44,19 @@ class Fault extends \pms\Controller
                 'st' => 'proxy@/index/index',
                 'p' => $data['p'] ?? ''
             ];
-            $this->connect->swoole_server->send($fd, \swoole_serialize::pack($data) . PACKAGE_EOF);
+            $this->connect->swoole_server->send($fd, $this->encode($data));
             return false;
         }
 
         $re = $proxy->send($data, $fd);
-        output($re, '消息发送结果');
+        \pms\output($re, '消息发送结果');
         if ($re === false) {
             # 发送失败 写入队列
             $this->connect->swoole_server->channel->push([
                 'fd' => $this->connect->getFd(),
                 'd' => $data
             ]);
-            swoole_timer_after(2000, [$this, pop_channel]);
+            swoole_timer_after(2000, [$this, 'pop_channel']);
         } else {
             $this->logger->info(json_encode($data));
             ## 发送成功
@@ -67,18 +67,31 @@ class Fault extends \pms\Controller
     }
 
     /**
+     * 编码
+     * @param array $data
+     * @return string
+     */
+    private function encode(array $data): string
+    {
+        $msg_normal = \pms\Serialize::pack($data);
+        $msg_length = pack("N", strlen($msg_normal)) . $msg_normal;
+        return $msg_length;
+    }
+
+
+    /**
      * 消耗队列
      */
     public function pop_channel()
     {
-        output('pop_channel', 'pop_channel');
+        \pms\output('pop_channel', 'pop_channel');
 
-        output($this->connect->swoole_server->channel, 'pop_channel');
+        \pms\output($this->connect->swoole_server->channel, 'pop_channel');
         $data = $this->connect->swoole_server->channel->pop();
         if ($data == false) {
             return false;
         }
-        output($data, 'pop_channel_1');
+        \pms\output($data, 'pop_channel_1');
         $this->proxy_send($data['d'], $data['fd'], true);
     }
 

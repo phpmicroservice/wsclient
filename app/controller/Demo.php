@@ -8,7 +8,7 @@ class Demo
 {
     public function index()
     {
-        \output(151515);
+        \pms\output(151515);
     }
 
 }

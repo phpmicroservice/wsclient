@@ -19,14 +19,14 @@ class UpdateServer extends \app\Base
      */
     public function __construct($swoole_server)
     {
-        $this->client_ip = get_env('REGISTER_ADDRESS', 'pms_register');
-        $this->client_port = get_env('REGISTER_PORT', '9502');
+        $this->client_ip = \pms\get_env('REGISTER_ADDRESS', 'pms_register');
+        $this->client_port = \pms\get_env('REGISTER_PORT', '9502');
         $this->register_client = new \pms\bear\Client($swoole_server, $this->client_ip, $this->client_port, [], 'UpdateServer');
         # 进行回调绑定
         $this->register_client->on($this);
         $UpdateServer = $this;
         swoole_timer_tick(3000, function ($timeid) use ($UpdateServer) {
-            output('更新服务列表', 'updateService');
+            \pms\output('更新服务列表', 'updateService');
             $UpdateServer->start();
         });
     }
@@ -64,7 +64,7 @@ class UpdateServer extends \app\Base
     private function get_key()
     {
 
-        return md5(md5(get_env('REGISTER_SECRET_KEY')) . md5(strtolower(SERVICE_NAME)));
+        return md5(md5(\pms\get_env('REGISTER_SECRET_KEY')) . md5(strtolower(SERVICE_NAME)));
     }
 
     /**
@@ -76,7 +76,7 @@ class UpdateServer extends \app\Base
         if ($data['e']) {
             # 出错
         } else {
-//            output($data, 'US_receive');
+//            \pms\output($data, 'US_receive');
             # 正确的
             if ($data['t'] == '/service/getall') {
                 # 我们需要的数据
