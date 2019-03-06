@@ -9,7 +9,7 @@
     "phpmicroservice/pms-frame": "0.3.*dev"
   },
   "require-dev": {
-    "eaglewu/swoole-ide-helper": "dev-master@dev",
-    "phalcon/ide-stubs": "v3.4.*"
+    "phalcon/ide-stubs": "v3.4.*",
+    "swoft/swoole-ide-helper": "^4.2"
   }
 }
