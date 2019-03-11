@@ -3,12 +3,13 @@
 namespace app\controller;
 
 use app\logic\Proxy;
-use app\logic\Server;
+use pms\Controller\WsBase;
+
 
 /**
  * 需要转发的请求
  */
-class Fault extends \pms\Controller
+class Fault extends WsBase
 {
 
     public function initialize()
@@ -22,9 +23,9 @@ class Fault extends \pms\Controller
      */
     public function proxy()
     {
-        $data = $this->connect->request;
-        \pms\output('262626', 'Fault_proxy');
-        $this->proxy_send($data, $this->connect->getFd());
+        $data = $this->counnect->getData();
+        \pms\output($data, 'Fault_proxy');
+        //$this->proxy_send($data, $this->counnect->getFd());
     }
 
     /**
@@ -35,7 +36,7 @@ class Fault extends \pms\Controller
     public function proxy_send($data, $fd, $channel = false)
     {
         $server_name = $data['s'];
-        $proxy = Proxy::getInstance($this->connect->swoole_server, $server_name);
+        $proxy = Proxy::getInstance($this->counnect->swoole_server, $server_name);
         if (is_string($proxy)) {
             # 出错了!
             $data = [
@@ -44,7 +45,7 @@ class Fault extends \pms\Controller
                 'st' => 'proxy@/index/index',
                 'p' => $data['p'] ?? ''
             ];
-            $this->connect->swoole_server->send($fd, $this->encode($data));
+            $this->counnect->swoole_server->send($fd, $this->encode($data));
             return false;
         }
 
@@ -52,8 +53,8 @@ class Fault extends \pms\Controller
         \pms\output($re, '消息发送结果');
         if ($re === false) {
             # 发送失败 写入队列
-            $this->connect->swoole_server->channel->push([
-                'fd' => $this->connect->getFd(),
+            $this->counnect->swoole_server->channel->push([
+                'fd' => $this->counnect->getFd(),
                 'd' => $data
             ]);
             swoole_timer_after(2000, [$this, 'pop_channel']);
@@ -86,8 +87,8 @@ class Fault extends \pms\Controller
     {
         \pms\output('pop_channel', 'pop_channel');
 
-        \pms\output($this->connect->swoole_server->channel, 'pop_channel');
-        $data = $this->connect->swoole_server->channel->pop();
+        \pms\output($this->counnect->swoole_server->channel, 'pop_channel');
+        $data = $this->counnect->swoole_server->channel->pop();
         if ($data == false) {
             return false;
         }

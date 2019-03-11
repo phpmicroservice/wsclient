@@ -26,9 +26,10 @@ class Open extends WsBase
 
     public function index2()
     {
+        Output::output($this->counnect->getFd(), '29');
+        Output::output($this->proxyCS, '30');
         $this->counnect->send([
-            "index2"
-
+            "index2".uniqid()
         ]);
     }
 }

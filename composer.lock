@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-  "content-hash": "af0516f3df69fd18e51c8e56e1b5675b",
+    "content-hash": "eab556f9f8992eaa6a4d9035d22daf64",
     "packages": [
         {
             "name": "phpmicroservice/funch",
@@ -18,7 +18,13 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/phpmicroservice/funch/zipball/e8754c14a62a8258517ad4675a47dbe979e8ac0b",
                 "reference": "e8754c14a62a8258517ad4675a47dbe979e8ac0b",
-              "shasum": ""
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
             },
             "require": {
                 "php": ">7"
@@ -52,17 +58,17 @@
         },
         {
             "name": "phpmicroservice/pms-frame",
-          "version": "0.3.x-dev",
+            "version": "0.3.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpmicroservice/pms.git",
-              "reference": "eda6297b280c99274e88811e64c53c0bb73f1284"
+                "reference": "2598c46085b6d63c4c978bbc2cf1c89f00f0b408"
             },
             "dist": {
                 "type": "zip",
-              "url": "https://api.github.com/repos/phpmicroservice/pms/zipball/eda6297b280c99274e88811e64c53c0bb73f1284",
-              "reference": "eda6297b280c99274e88811e64c53c0bb73f1284",
-              "shasum": ""
+                "url": "https://api.github.com/repos/phpmicroservice/pms/zipball/2598c46085b6d63c4c978bbc2cf1c89f00f0b408",
+                "reference": "2598c46085b6d63c4c978bbc2cf1c89f00f0b408",
+                "shasum": ""
             },
             "require": {
                 "ext-phalcon": "3.4.*",
@@ -80,9 +86,9 @@
                 "psr-4": {
                     "pms\\": "src/"
                 },
-              "files": [
-                "src/function.php"
-              ]
+                "files": [
+                    "src/function.php"
+                ]
             },
             "license": [
                 "MIT"
@@ -98,115 +104,114 @@
             "description": "一个采用Swoole做底层,采用Phalcon作为框架类库的微服务框架",
             "homepage": "http://pms.2xso.com",
             "keywords": [
-              "microservice",
+                "microservice",
                 "phalcon",
                 "swoole",
                 "tcp",
                 "websockect"
             ],
-          "support": {
-            "source": "https://github.com/phpmicroservice/pms/tree/0.3",
-            "issues": "https://github.com/phpmicroservice/pms/issues"
-          },
-          "time": "2019-02-25T11:40:44+00:00"
+            "support": {
+                "source": "https://github.com/phpmicroservice/pms/tree/0.3",
+                "issues": "https://github.com/phpmicroservice/pms/issues"
+            },
+            "time": "2019-03-03T11:53:02+00:00"
         }
     ],
-  "packages-dev": [
-    {
-      "name": "eaglewu/swoole-ide-helper",
-      "version": "dev-master",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/wudi/swoole-ide-helper.git",
-        "reference": "fae3d09e7494245a5bab0adcd09a1612fc4112b5"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/wudi/swoole-ide-helper/zipball/fae3d09e7494245a5bab0adcd09a1612fc4112b5",
-        "reference": "fae3d09e7494245a5bab0adcd09a1612fc4112b5",
-        "shasum": ""
-      },
-      "type": "library",
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "MIT"
-      ],
-      "authors": [
+    "packages-dev": [
         {
-          "name": "eagle",
-          "email": "eaglewudi@gmail.com",
-          "role": "lead"
-        }
-      ],
-      "description": "Swoole IDE Helper, to improve auto-completion",
-      "keywords": [
-        "autocomplete",
-        "codeintel",
-        "helper",
-        "ide",
-        "netbeans",
-        "phpdoc",
-        "phpstorm",
-        "sublime",
-        "swoole"
-      ],
-      "time": "2019-02-12T03:03:41+00:00"
-    },
-    {
-      "name": "phalcon/ide-stubs",
-      "version": "v3.4.3",
-      "source": {
-        "type": "git",
-        "url": "https://github.com/phalcon/ide-stubs.git",
-        "reference": "65144f2b0fad32b182ccb062b1efc1b4edea5d44"
-      },
-      "dist": {
-        "type": "zip",
-        "url": "https://api.github.com/repos/phalcon/ide-stubs/zipball/65144f2b0fad32b182ccb062b1efc1b4edea5d44",
-        "reference": "65144f2b0fad32b182ccb062b1efc1b4edea5d44",
-        "shasum": ""
-      },
-      "require": {
-        "php": ">=5.3.0"
-      },
-      "type": "library",
-      "notification-url": "https://packagist.org/downloads/",
-      "license": [
-        "BSD-3-Clause"
-      ],
-      "authors": [
-        {
-          "name": "Phalcon Team",
-          "email": "team@phalconphp.com",
-          "homepage": "https://phalconphp.com/en/team"
+            "name": "phalcon/ide-stubs",
+            "version": "v3.4.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phalcon/ide-stubs.git",
+                "reference": "65144f2b0fad32b182ccb062b1efc1b4edea5d44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phalcon/ide-stubs/zipball/65144f2b0fad32b182ccb062b1efc1b4edea5d44",
+                "reference": "65144f2b0fad32b182ccb062b1efc1b4edea5d44",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Phalcon Team",
+                    "email": "team@phalconphp.com",
+                    "homepage": "https://phalconphp.com/en/team"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/phalcon/ide-stubs/graphs/contributors"
+                }
+            ],
+            "description": "The most complete Phalcon Framework IDE stubs library which enables autocompletion in modern IDEs.",
+            "homepage": "https://phalconphp.com",
+            "keywords": [
+                "Devtools",
+                "Eclipse",
+                "autocomplete",
+                "ide",
+                "netbeans",
+                "phalcon",
+                "phpstorm",
+                "stub",
+                "stubs"
+            ],
+            "time": "2018-12-09T14:11:06+00:00"
         },
         {
-          "name": "Contributors",
-          "homepage": "https://github.com/phalcon/ide-stubs/graphs/contributors"
+            "name": "swoft/swoole-ide-helper",
+            "version": "v4.2.12",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swoft-cloud/swoole-ide-helper.git",
+                "reference": "912a2c5db04c859531d7e89a1a985bb63354fe8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swoft-cloud/swoole-ide-helper/zipball/912a2c5db04c859531d7e89a1a985bb63354fe8d",
+                "reference": "912a2c5db04c859531d7e89a1a985bb63354fe8d",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "ide helper for Swoft and Swoole",
+            "keywords": [
+                "ide-helper",
+                "php",
+                "swoft",
+                "swoole"
+            ],
+            "time": "2019-01-06T11:09:21+00:00"
         }
-      ],
-      "description": "The most complete Phalcon Framework IDE stubs library which enables autocompletion in modern IDEs.",
-      "homepage": "https://phalconphp.com",
-      "keywords": [
-        "Devtools",
-        "Eclipse",
-        "autocomplete",
-        "ide",
-        "netbeans",
-        "phalcon",
-        "phpstorm",
-        "stub",
-        "stubs"
-      ],
-      "time": "2018-12-09T14:11:06+00:00"
-    }
-  ],
+    ],
     "aliases": [],
     "minimum-stability": "stable",
-  "stability-flags": {
-    "phpmicroservice/pms-frame": 20,
-    "eaglewu/swoole-ide-helper": 20
-  },
+    "stability-flags": {
+        "phpmicroservice/pms-frame": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

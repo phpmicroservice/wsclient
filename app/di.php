@@ -183,6 +183,14 @@ $di["db"] = function () use ($di) {
     );
 };
 
+
+$di->set(
+    "proxyCS", function () {
+    $client = new \pms\bear\ClientSync(\pms\get_env('PROXY_HOST', 'demo_pms_proxy_1'), \pms\get_env('PROXY_PROT', '9502'), 30);
+    return $client;
+});
+
+
 $di->setShared('router2', function () {
     $router = new \Phalcon\Mvc\Router();
     $router->setDefaultController('open');
