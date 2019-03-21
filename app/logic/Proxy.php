@@ -182,7 +182,6 @@ class Proxy extends Base
 
     public function __destruct()
     {
-        // TODO: Implement __destruct() method.
         \pms\output('销毁代理器对象');
     }
 

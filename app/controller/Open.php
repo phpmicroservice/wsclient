@@ -2,8 +2,10 @@
 
 namespace app\controller;
 
+use pms\bear\WsCounnect;
 use pms\Controller\WsBase;
 use pms\Output;
+use pms\Session;
 
 /**
  * 建立连接
@@ -14,22 +16,64 @@ class Open extends WsBase
 {
 
     /**
-     * 默认方法
+     * 默认方法,链接方法
+     * @param [\pms\bear\WsCounnect] $params
      */
-    public function index()
+    public function index(array $params)
     {
-        Output::output($this->counnect->getFd(), '20');
-        $this->counnect->send([
-            "成功!"
+        //counnect
+        Output::output($params[0]->getFd(), 'index2');
+        Output::output($params[0]->getSid(), 'index3');
+
+    }
+
+    /**
+     * 获取sid
+     * @param array $params
+     */
+    public function getsid(array $params)
+    {
+        $counnect = $params[0];
+        $sid = $counnect->getSid();
+        $session=new Session($sid);
+        $session_id = $session->get('session_id');
+        if(is_null($session_id)){
+            $session_id =uniqid().'_'.md5(uniqid().time().$counnect->getFd());
+            $session->set('session_id',$session_id);
+        }
+        $counnect->send([
+            200,"获取成功!",['sid'=>$session_id]
         ]);
     }
 
-    public function index2()
+
+    /**
+     * 设置SID
+     * @TODO 这个设置操作应该进行验证,请自行书写逻辑
+     * @param array $params
+     */
+    public function setsid(array $params)
     {
-        Output::output($this->counnect->getFd(), '29');
-        Output::output($this->proxyCS, '30');
-        $this->counnect->send([
-            "index2".uniqid()
-        ]);
+        $counnect = $params[0];
+        if($counnect instanceof WsCounnect){
+            $sid = $counnect->getSid();
+            $session=new Session($sid);
+            $session_id = $session->get('session_id');
+            if(is_null($session_id)){
+                $session_id =$counnect->getContent();
+                $session->set('session_id',$session_id);
+                $counnect->send([
+                    200,"设置成功!"
+                ]);
+            }else{
+                $counnect->send([
+                    406,"SID已经设置"
+                ]);
+            }
+
+        }
+
     }
+
+
 }

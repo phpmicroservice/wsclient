@@ -5,9 +5,6 @@
  * 服务的全局注册都这里,依赖注入
  */
 
-use Phalcon\Mvc\Url as UrlResolver;
-use Phalcon\Mvc\Model\Manager as ModelsManager;
-use Phalcon\Events\Manager;
 use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
 
 
@@ -133,33 +130,6 @@ $di->setShared('logger', function () {
 });
 
 
-$di->setShared('', function () {
-    # 客户端
-    $client = new \Swoole\Client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_ASYNC);
-
-    $client->set(SD_OPTION);
-    $client->on("connect", function (swoole_client $cli) {
-        echo "代理器链接成功! \n";
-    });
-    $client->on("receive", 'receive');
-
-    $client->on("error", function (swoole_client $client) {
-        echo "代理器 error\n";
-        echo $client->errCode;
-        swoole_timer_after(1000, function ($client) {
-            $client->connect(TCP_SERVER_HOST, TCP_SERVER_PORT);
-        }, $client);
-    });
-    $client->on("close", function (swoole_client $client) {
-        echo "代理器 close \n";
-        swoole_timer_after(1000, function ($client) {
-            $client->connect(TCP_SERVER_HOST, TCP_SERVER_PORT);
-        }, $client);
-    });
-
-    $client->connect(TCP_SERVER_HOST, TCP_SERVER_PORT);
-    return $client;
-});
 
 
 /**
@@ -184,9 +154,10 @@ $di["db"] = function () use ($di) {
 };
 
 
-$di->set(
-    "proxyCS", function () {
-    $client = new \pms\bear\ClientSync(\pms\get_env('PROXY_HOST', 'demo_pms_proxy_1'), \pms\get_env('PROXY_PROT', '9502'), 30);
+$di->setShared(
+    "proxyClient", function () {
+    $client = new \pms\bear\Client(\pms\get_env('PROXY_HOST', 'demo_pms_proxy_1'), \pms\get_env('PROXY_PROT', '9502'), [],'proxycs');
+    $client->start();
     return $client;
 });
 
@@ -196,15 +167,61 @@ $di->setShared('router2', function () {
     $router->setDefaultController('open');
     $router->setDefaultAction('index');
     $router->add(
-        "/:controller/:action/:params", [
-            "task" => 1,
-            "action" => 2
+        "/:module/:controller/:action/:params",
+        [
+            "controller" => 1,
+            "action" => 'proxy'
         ]
     );
     $router->add(
-        "/:controller/:action", [
-            "task" => 1,
-            "action" => 2
+        "/open",
+        [
+            "controller" => 'open',
+            "action" => 'index'
+        ]
+    );
+
+
+
+
+
+    $router->add(
+        "/close",
+        [
+            "controller" => 'close',
+            "action" => 'index'
+        ]
+    );
+    $router->add(
+        "/",
+        [
+            "controller" => 'fault',
+            "action" => 'proxy'
+        ]
+    );
+    $router->add(
+        "/getsid",
+        [
+            "controller" => 'open',
+            "action" => 'getsid'
+        ]
+    );
+
+
+    $router->add(
+        "/setsid",
+        [
+            "controller" => 'open',
+            "action" => 'setsid'
+        ]
+    );
+
+    # 客户端代理器的
+    $router->add(
+        "/proxycs/:action",
+        [
+            "controller" => 'proxycs',
+            "action" => 1
         ]
     );
     return $router;

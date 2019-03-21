@@ -3,7 +3,10 @@
 namespace app\controller;
 
 use app\logic\Proxy;
+use pms\bear\WsCounnect;
 use pms\Controller\WsBase;
+use pms\Session;
+use Swoole\WebSocket\Server;
 
 
 /**
@@ -12,20 +15,62 @@ use pms\Controller\WsBase;
 class Fault extends WsBase
 {
 
-    public function initialize()
-    {
-
-    }
-
     /**
      * 不合法的控制器名字
      * @param $data
      */
-    public function proxy()
+    public function proxy($per)
     {
-        $data = $this->counnect->getData();
-        \pms\output($data, 'Fault_proxy');
-        //$this->proxy_send($data, $this->counnect->getFd());
+        $this->di->getShared('proxyClient');
+        \pms\output(__FUNCTION__, 'Fault_proxy');
+        $this->run2($per[0],$per[1]);
+    }
+
+    public function run2(WsCounnect $counnect,Server $server){
+        $data2 = $this->call_service($counnect,$server);
+        if($data2){
+            $this->proxy_send($data2,$counnect);
+        }
+    }
+
+    /**
+     * 服务的处理
+     */
+    public function call_service(WsCounnect $counnect,Server $server)
+    {
+        $sid = $counnect->getSid();
+        $session=new Session($sid);
+        $session->set('fd',$counnect->getFd());
+        $session_id = $session->get('session_id');
+        if(is_null($session_id)){
+            $counnect->send([
+                428,'请先获取或设置SID'
+            ]);
+            return false;
+        }
+        $data =$counnect->getData();
+        $router=new \Phalcon\Mvc\Router();
+
+        // Define a route
+        $router->add(
+            '/:module/:controller/:action',
+            [
+                'module'=>1,
+                'controller' => 2,
+                'action'     => 3
+            ]
+        );
+        $router_string=$counnect->getRouterString();
+        $router->handle($router_string);
+        $data2 = [
+            's' => $router->getModuleName(),
+            'r' => '/' . $router->getControllerName() . '/' . $router->getActionName(),
+            'd' => $data['d'],
+            'p' => $sid,
+            'sid' => $session_id,
+            'f' => strtolower(SERVICE_NAME)
+        ];
+        return $data2;
     }
 
     /**
@@ -33,67 +78,22 @@ class Fault extends WsBase
      * @param $data
      * @param $fd
      */
-    public function proxy_send($data, $fd, $channel = false)
+    public function proxy_send($data, WsCounnect $counnect)
     {
-        $server_name = $data['s'];
-        $proxy = Proxy::getInstance($this->counnect->swoole_server, $server_name);
-        if (is_string($proxy)) {
-            # 出错了!
-            $data = [
-                'e' => 404,
-                'm' => '服务异常-' . $server_name . ':' . $proxy,
-                'st' => 'proxy@/index/index',
-                'p' => $data['p'] ?? ''
-            ];
-            $this->counnect->swoole_server->send($fd, $this->encode($data));
-            return false;
-        }
 
-        $re = $proxy->send($data, $fd);
-        \pms\output($re, '消息发送结果');
-        if ($re === false) {
-            # 发送失败 写入队列
-            $this->counnect->swoole_server->channel->push([
-                'fd' => $this->counnect->getFd(),
-                'd' => $data
-            ]);
-            swoole_timer_after(2000, [$this, 'pop_channel']);
-        } else {
-            $this->logger->info(json_encode($data));
-            ## 发送成功
-            if ($channel) {
-                $this->pop_channel();
+        $proxy = $this->di->getShared('proxyClient');
+
+        \pms\output([get_class($proxy), $data], 'proxy_send');
+        if ($proxy instanceof \pms\bear\Client) {
+            if (!$proxy->isConnected()) {
+                $proxy->start();
+            }
+            $re = $proxy->send($data);
+            if ($re === false) {
+                $counnect->send([500, "服务异常!,请稍后重试或联系管理员!"]);
             }
         }
-    }
 
-    /**
-     * 编码
-     * @param array $data
-     * @return string
-     */
-    private function encode(array $data): string
-    {
-        $msg_normal = \pms\Serialize::pack($data);
-        $msg_length = pack("N", strlen($msg_normal)) . $msg_normal;
-        return $msg_length;
-    }
-
-
-    /**
-     * 消耗队列
-     */
-    public function pop_channel()
-    {
-        \pms\output('pop_channel', 'pop_channel');
-
-        \pms\output($this->counnect->swoole_server->channel, 'pop_channel');
-        $data = $this->counnect->swoole_server->channel->pop();
-        if ($data == false) {
-            return false;
-        }
-        \pms\output($data, 'pop_channel_1');
-        $this->proxy_send($data['d'], $data['fd'], true);
     }
 
     /**
