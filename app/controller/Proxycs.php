@@ -35,8 +35,9 @@ class Proxycs extends \Phalcon\Di\Injectable
                     'sc'=>$data['sc']??400,
                     'e' => 1,
                     'm' => $data['m']??'',
-                    'd'=>$data['d']??[],
+                    'd'=>$data['d']??null,
                     'st' => $data['st'],
+                    'ts'=> time()
                 ];
             }else{
 
@@ -45,8 +46,9 @@ class Proxycs extends \Phalcon\Di\Injectable
                     'sc'=>200,
                     'e' => 0,
                     'm' => $data['m']??'',
-                    'd'=>$data['d']??[],
+                    'd'=>$data['d']??null,
                     'st' => $data['st'],
+                    'ts'=> time()
                 ];
 
 
