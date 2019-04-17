@@ -20,38 +20,36 @@ class Proxycs extends \Phalcon\Di\Injectable
         if ($params[0] instanceof ClientCounnect) {
             $ClientCounnect = $params[0];
 
-            $data = $params[0]->getData();
+            $data = $ClientCounnect->getData();
             $sid = $data['p'];
             $Session=new Session($sid);
             $fd=$Session->get('fd');
-            Output::output($fd, 'Proxycs');
+            Output::output($data, 'Proxycs');
             if(is_null($fd)){
                 Output::output('客户端已经关闭!', 'Proxycs');
                 return $fd;
             }
-            if($data['e']??0){
+            if ($data['e'] ?? 0) {
                 //出错!
-                $data2=[
-                    'sc'=>$data['sc']??400,
-                    'e' => 1,
-                    'm' => $data['m']??'',
-                    'd'=>$data['d']??null,
+                $data2 = [
+                    'sc' => $data['sc'] ?? 400,
+                    'e'  => 1,
+                    'm'  => $data['m'] ?? '',
+                    'd'  => $data['d'] ?? null,
                     'st' => $data['st'],
-                    'ts'=> time()
+                    'ts' => time()
                 ];
-            }else{
+            } else {
 
                 //没有错误
-                $data2=[
-                    'sc'=>200,
-                    'e' => 0,
-                    'm' => $data['m']??'',
-                    'd'=>$data['d']??null,
+                $data2 = [
+                    'sc' => 200,
+                    'e'  => 0,
+                    'm'  => $data['m'] ?? '',
+                    'd'  => $data['d'] ?? null,
                     'st' => $data['st'],
-                    'ts'=> time()
+                    'ts' => time()
                 ];
-
-
             }
             $server=\Phalcon\Di\FactoryDefault\Cli::getDefault()->getShared('server');
             Output::output(get_class($server), 'server');
